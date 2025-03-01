@@ -29,11 +29,13 @@ pipeline {
 
         stage('login to Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials')]) {
-                    sh "echo 'Logged in to Docker Hub'"
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                   sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
                 }
+
             }
         }
+        
         stage('Push Docker Image') {
             steps {
                 sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${DOCKER_HUB_REPO}:${IMAGE_TAG}"
