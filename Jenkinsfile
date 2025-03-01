@@ -6,6 +6,7 @@ pipeline {
     }
 
     stages {
+
         stage('Clone Repository') {
             steps {
                 git branch:'main', url: 'https://github.com/c0r1n93/devops-project.git'
@@ -24,13 +25,21 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
+        stage('login to Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentials
-Id: 'dockerhub-credentials', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
-                    sh "docker push ${DOCKER_HUB_REPO}:latest"
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials')]) {
+                    sh "echo 'Logged in to Docker Hub'"
                 }
             }
         }
+        stage('Push Docker Image') {
+            steps {
+                sh "docker push ${DOCKER_HUB_REPO}:latest"
+            }
+        }
+
     }
-}
+    
+}    
+    
+	
