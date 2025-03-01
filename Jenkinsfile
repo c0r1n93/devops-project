@@ -45,14 +45,14 @@ pipeline {
         stage('Deploy on EC2') {
             steps {
                 sshagent(['deploy-server-ssh']) {
-                    sh '''
-                    ssh -o StrictHostKeyChecking=no ubuntu@54.89.31.61 <<EOF
-                    docker pull $DOCKER_HUB_REPO:latest
-                    docker stop my-java-app || true
-                    docker rm my-java-app || true
-                    docker run -d -p 8080:8080 --name my-java-app $DOCKER_HUB_REPO:latest
-                    EOF
-                    '''
+                
+                    sh "ssh -o StrictHostKeyChecking=no java ec2@54.89.31.61 <<EOF"
+                    sh "docker pull $DOCKER_HUB_REPO:latest"
+                    sh "docker stop my-java-app || true"
+                    sh "docker rm my-java-app || true
+                    sh "docker run -d -p 8080:8080 --name my-java-app ${DOCKER_HUB_REPO}:${IMAGE_TAG}"
+                    EOF"
+                
                 }
             }
         }
