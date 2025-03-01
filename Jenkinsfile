@@ -26,8 +26,8 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v2/']) {
-                    sh "docker tag my-java-app:latest ${DOCKER_HUB_REPO}:latest"
+                withCredentials([usernamePassword(credentials
+Id: 'dockerhub-credentials', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
                     sh "docker push ${DOCKER_HUB_REPO}:latest"
                 }
             }
