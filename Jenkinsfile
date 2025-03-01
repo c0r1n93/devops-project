@@ -20,29 +20,15 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_HUB_REPO:latest .'
+                sh "docker build -t ${DOCKER_HUB_REPO}:latest ."
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    sh 'docker push $DOCKER_HUB_REPO:latest'
-                }
-            }
-        }
-
-        stage('Deploy on EC2') {
-            steps {
-                sshagent(['deploy-server-ssh']) {
-                    sh '''
-                    ssh -o StrictHostKeyChecking=no ubuntu@<DEPLOY-EC2-IP> <<EOF
-                    docker pull $DOCKER_HUB_REPO:latest
-                    docker stop my-java-app || true
-                    docker rm my-java-app || true
-                    docker run -d -p 8080:8080 --name my-java-app $DOCKER_HUB_REPO:latest
-                    EOF
-                    '''
+                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v2/']) {
+                    sh "docker tag my-java-app:latest ${DOCKER_HUB_REPO}:latest"
+                    sh "docker push ${DOCKER_HUB_REPO}:latest"
                 }
             }
         }
