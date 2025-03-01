@@ -5,7 +5,8 @@ FROM openjdk:11-jre-slim
 WORKDIR /app
 
 # Copy the built JAR file from the host machine to the container
-COPY target/my-web-app.jar /app/my-web-app.jar
+COPY COPY target/hello-world-1.0-SNAPSHOT.jar /app/my-web-app.jar
+
 
 # Expose port 8080 (or change as needed)
 EXPOSE 8080
